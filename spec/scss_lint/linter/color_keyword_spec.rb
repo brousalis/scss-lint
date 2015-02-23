@@ -8,6 +8,11 @@ describe SCSSLint::Linter::ColorKeyword do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #fff
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -17,6 +22,11 @@ describe SCSSLint::Linter::ColorKeyword do
         color: white;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        color: white
+    SASS
 
     it { should report_lint line: 2 }
   end
@@ -28,6 +38,11 @@ describe SCSSLint::Linter::ColorKeyword do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        border: 1px solid black
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -37,6 +52,11 @@ describe SCSSLint::Linter::ColorKeyword do
         content: 'white';
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        content: 'white'
+    SASS
 
     it { should_not report_lint }
   end
@@ -48,6 +68,11 @@ describe SCSSLint::Linter::ColorKeyword do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: function(red)
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -57,6 +82,11 @@ describe SCSSLint::Linter::ColorKeyword do
         @include some-mixin(red);
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        +some-mixin(red)
+    SASS
 
     it { should report_lint line: 2 }
   end
@@ -68,6 +98,11 @@ describe SCSSLint::Linter::ColorKeyword do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        +mixin(transparent)
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -77,6 +112,11 @@ describe SCSSLint::Linter::ColorKeyword do
         content: content-with-blue-in-name;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        content: content-with-blue-in-name
+    SASS
 
     it { should_not report_lint }
   end
