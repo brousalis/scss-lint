@@ -18,6 +18,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border: 1px solid #000
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -27,6 +32,11 @@ describe SCSSLint::Linter::BorderZero do
           border: 0;
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        p
+          border: 0
+      SASS
 
       it { should_not report_lint }
     end
@@ -38,6 +48,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border: none
+      SASS
+
       it { should report_lint line: 2 }
     end
 
@@ -48,6 +63,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border-top: none
+      SASS
+
       it { should report_lint line: 2 }
     end
 
@@ -57,6 +77,11 @@ describe SCSSLint::Linter::BorderZero do
           border-right: none;
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        p
+          border-right: none
+      SASS
 
       it { should report_lint line: 2 }
     end
@@ -78,6 +103,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border-left: none
+      SASS
+
       it { should report_lint line: 2 }
     end
   end
@@ -92,6 +122,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border: none
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -102,6 +137,11 @@ describe SCSSLint::Linter::BorderZero do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          border: 0
+      SASS
+
       it { should report_lint }
     end
 
@@ -111,6 +151,11 @@ describe SCSSLint::Linter::BorderZero do
           border: 5px;
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        p
+          border: 5px
+      SASS
 
       it { should_not report_lint }
     end
