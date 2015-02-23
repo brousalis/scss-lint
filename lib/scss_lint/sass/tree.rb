@@ -118,15 +118,19 @@ module Sass::Tree
 
   class MixinNode
     def children
-      add_line_numbers_to_args(args)
+      if options
+        add_line_numbers_to_args(args)
 
-      # Keyword mapping is String -> Expr, so convert the string to a variable
-      # node that supports lint reporting
-      keyword_exprs = keywords.as_stored.map do |var_name, var_expr|
-        [create_variable(var_name), var_expr]
-      end if keywords.any?
+        # Keyword mapping is String -> Expr, so convert the string to a variable
+        # node that supports lint reporting
+        keyword_exprs = keywords.as_stored.map do |var_name, var_expr|
+          [create_variable(var_name), var_expr]
+        end if keywords.any?
 
-      concat_expr_lists super, args, keyword_exprs, splat
+        concat_expr_lists super, args, keyword_exprs, splat
+      else
+        super
+      end
     end
   end
 
