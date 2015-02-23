@@ -132,7 +132,11 @@ module Sass::Tree
 
   class PropNode
     def children
-      concat_expr_lists super, extract_script_nodes(name), add_line_number(value)
+      if options
+        concat_expr_lists super, extract_script_nodes(name), add_line_number(value)
+      else
+        super
+      end
     end
   end
 
@@ -150,7 +154,11 @@ module Sass::Tree
 
   class VariableNode
     def children
-      concat_expr_lists super, expr
+      if options
+        concat_expr_lists super, expr
+      else
+        super
+      end
     end
   end
 
