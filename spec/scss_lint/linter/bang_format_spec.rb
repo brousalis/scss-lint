@@ -8,6 +8,11 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -17,6 +22,11 @@ describe SCSSLint::Linter::BangFormat do
         color: #000 !important;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        color: #000 !important
+    SASS
 
     it { should_not report_lint }
   end
@@ -28,6 +38,11 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #000!important
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -37,6 +52,11 @@ describe SCSSLint::Linter::BangFormat do
         color: #000 ! important;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        color: #000 ! important
+    SASS
 
     it { should report_lint line: 2 }
   end
@@ -50,6 +70,11 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #000 ! important
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -62,6 +87,11 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #000 ! important
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -73,6 +103,11 @@ describe SCSSLint::Linter::BangFormat do
         color: #000!important;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        color: #000!important
+    SASS
 
     it { should_not report_lint }
   end
@@ -93,6 +128,27 @@ describe SCSSLint::Linter::BangFormat do
       $foo: "!bar";
       $foo: "b!ar";
     SCSS
+
+    let(:sass) { <<-SASS }
+      p:before
+        content: "!important"
+      p:before
+        content: "imp!ortant"
+      p:after
+        content: '!'
+      div:before
+        content: 'important!'
+      div:after
+        content: '  !  '
+      p[attr="foo!bar"]
+      p[attr='foo!bar']
+      p[attr="!foobar"]
+      p[attr='foobar!']
+      $foo: 'bar!'
+      $foo: "bar!"
+      $foo: "!bar"
+      $foo: "b!ar"
+    SASS
 
     it { should_not report_lint }
   end

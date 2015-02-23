@@ -14,11 +14,11 @@ module SCSSLint
     # or file.
     #
     # @param scss_or_filename [String]
-    def initialize(scss_or_filename)
-      if File.exist?(scss_or_filename)
-        build_from_file(scss_or_filename)
+    def initialize(str_or_filename, syntax=:scss)
+      if File.exist?(str_or_filename)
+        build_from_file(str_or_filename)
       else
-        build_from_string(scss_or_filename)
+        build_from_string(str_or_filename, syntax)
       end
 
       # Need to force encoding to avoid Windows-related bugs.
@@ -39,6 +39,7 @@ module SCSSLint
   private
 
     # @param path [String]
+    # TODO: parse file extension switch sass syntax option
     def build_from_file(path)
       @filename = path
       @engine = Sass::Engine.for_file(path, ENGINE_OPTIONS)
@@ -46,9 +47,9 @@ module SCSSLint
     end
 
     # @param scss [String]
-    def build_from_string(scss)
-      @engine = Sass::Engine.new(scss, ENGINE_OPTIONS)
-      @contents = scss
+    def build_from_string(str, syntax)
+      @engine = Sass::Engine.new(str, ENGINE_OPTIONS.merge(syntax: syntax))
+      @contents = str
     end
   end
 end
