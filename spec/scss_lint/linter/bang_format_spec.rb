@@ -53,11 +53,6 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
-    let(:sass) { <<-SASS }
-      p
-        color: #000 ! important
-    SASS
-
     it { should report_lint line: 2 }
   end
 
@@ -70,11 +65,6 @@ describe SCSSLint::Linter::BangFormat do
       }
     SCSS
 
-    let(:sass) { <<-SASS }
-      p
-        color: #000 ! important
-    SASS
-
     it { should_not report_lint }
   end
 
@@ -86,11 +76,6 @@ describe SCSSLint::Linter::BangFormat do
         color: #000 ! important;
       }
     SCSS
-
-    let(:sass) { <<-SASS }
-      p
-        color: #000 ! important
-    SASS
 
     it { should report_lint line: 2 }
   end
