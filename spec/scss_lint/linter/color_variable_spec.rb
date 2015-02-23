@@ -6,6 +6,10 @@ describe SCSSLint::Linter::ColorVariable do
       $my-color: #f00;
     SCSS
 
+    let(:sass) { <<-SASS }
+      $my-color: #f00
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -15,6 +19,11 @@ describe SCSSLint::Linter::ColorVariable do
         color: #f00;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        color: #f00
+    SASS
 
     it { should report_lint line: 2 }
   end
@@ -26,6 +35,11 @@ describe SCSSLint::Linter::ColorVariable do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: my-func(#f00)
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -36,6 +50,11 @@ describe SCSSLint::Linter::ColorVariable do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        +my-mixin(#f00)
+    SASS
+
     it { should report_lint line: 2 }
   end
 
@@ -45,6 +64,11 @@ describe SCSSLint::Linter::ColorVariable do
         border: 1px solid #f00;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        border: 1px solid #f00
+    SASS
 
     it { should report_lint line: 2 }
   end
@@ -57,6 +81,12 @@ describe SCSSLint::Linter::ColorVariable do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        z-index: 9000
+        transition-duration: 250ms
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -66,6 +96,11 @@ describe SCSSLint::Linter::ColorVariable do
         overflow: hidden;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        overflow: hidden
+    SASS
 
     it { should_not report_lint }
   end
@@ -77,6 +112,11 @@ describe SCSSLint::Linter::ColorVariable do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: $my-color
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -87,6 +127,11 @@ describe SCSSLint::Linter::ColorVariable do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: my-func($my-color)
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -96,6 +141,11 @@ describe SCSSLint::Linter::ColorVariable do
         border: 1px solid $my-color;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        border: 1px solid $my-color
+    SASS
 
     it { should_not report_lint }
   end
