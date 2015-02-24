@@ -41,7 +41,7 @@ module SCSSLint
         DECLARATION_ORDER.index(a) <=> DECLARATION_ORDER.index(b)
       end
 
-      return unless children != sorted_children
+      return if children == sorted_children
       add_lint(node.children.first, MESSAGE)
     end
 
