@@ -8,6 +8,11 @@ describe SCSSLint::Linter::DebugStatement do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        color: #fff
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -15,6 +20,10 @@ describe SCSSLint::Linter::DebugStatement do
     let(:scss) { <<-SCSS }
       @debug 'This is a debug statement';
     SCSS
+
+    let(:sass) { <<-SASS }
+      @debug 'This is a debug statement'
+    SASS
 
     it { should report_lint line: 1 }
   end
