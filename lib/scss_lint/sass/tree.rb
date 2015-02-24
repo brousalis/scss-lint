@@ -59,7 +59,11 @@ module Sass::Tree
 
   class DebugNode
     def children
-      concat_expr_lists super, expr
+      if options
+        concat_expr_lists super, expr
+      else
+        super
+      end
     end
   end
 
