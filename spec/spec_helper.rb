@@ -32,8 +32,11 @@ RSpec.configure do |config|
     # for each example. This significantly DRYs up our linter specs to contain
     # only tests, since all the setup code is now centralized here.
     if described_class <= SCSSLint::Linter
-      lint(scss, :scss)
-      lint(sass, :sass) if defined? sass
+      if defined? scss
+        lint(scss, :scss)
+      elsif defined? sass
+        lint(sass, :sass)
+      end
     end
   end
 end

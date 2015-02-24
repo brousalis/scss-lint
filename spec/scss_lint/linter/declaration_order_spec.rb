@@ -18,6 +18,12 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        background: #000
+        margin: 5px
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -28,6 +34,12 @@ describe SCSSLint::Linter::DeclarationOrder do
         @include box-shadow(5px);
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      p
+        +border-radius(5px)
+        +box-shadow(5px)
+    SASS
 
     it { should_not report_lint }
   end
@@ -41,21 +53,43 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      p
+        a
+          color: #f00
+    SASS
+
     it { should_not report_lint }
   end
 
   context 'when rule contains properties after nested rules' do
-    let(:scss) { <<-SCSS }
-      p {
-        a {
-          color: #f00;
-        }
-        color: #f00;
-        margin: 5px;
-      }
-    SCSS
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        p {
+          a {
+            color: #f00;
+          }
 
-    it { should report_lint }
+          color: #f00;
+          margin: 5px;
+        }
+      SCSS
+
+      it { should report_lint }
+    end
+
+    context 'sass' do
+      let(:sass) { <<-SASS }
+        p
+          a
+            color: #f00
+
+          color: #f00
+          margin: 5px
+      SASS
+
+      it { should report_lint }
+    end
   end
 
   context 'when @extend appears before any properties or rules' do
@@ -71,6 +105,17 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      .warn
+        font-weight: bold
+
+      .error
+        @extend .warn
+        color: #f00
+        a
+          color: #ccc
+    SASS
 
     it { should_not report_lint }
   end
@@ -89,6 +134,17 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      .warn
+        font-weight: bold
+
+      .error
+        color: #f00
+        @extend .warn
+        a
+          color: #ccc
+    SASS
+
     it { should report_lint }
   end
 
@@ -103,6 +159,13 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        p
+          a
+            @extend foo
+            color: #f00
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -115,6 +178,13 @@ describe SCSSLint::Linter::DeclarationOrder do
           }
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        p
+          a
+            color: #f00
+            @extend foo
+      SASS
 
       it { should report_lint }
     end
@@ -130,6 +200,15 @@ describe SCSSLint::Linter::DeclarationOrder do
           }
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        p
+          a
+            span
+              color: #000
+
+            @extend foo
+      SASS
 
       it { should report_lint }
     end
@@ -147,6 +226,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        .error
+          @include warn
+          color: #f00
+          a
+            color: #ccc
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -160,6 +247,14 @@ describe SCSSLint::Linter::DeclarationOrder do
           }
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        .error
+          color: #f00
+          @include warn
+          a
+            color: #ccc
+      SASS
 
       it { should report_lint }
     end
@@ -176,6 +271,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        .foo
+          +breakpoint("phone")
+            color: #ccc
+
+          color: #f00
+      SASS
+
       it { should report_lint }
     end
 
@@ -189,6 +292,13 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        .foo
+          color: #f00
+          +breakpoint("phone")
+            color: #ccc
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -201,6 +311,14 @@ describe SCSSLint::Linter::DeclarationOrder do
           @extend .bar;
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        .foo
+          +breakpoint("phone")
+            color: #ccc
+
+          @extend .bar
+      SASS
 
       it { should report_lint }
     end
@@ -217,6 +335,15 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        .foo
+          +breakpoint("phone")
+            color: #ccc
+
+          a
+            color: #fff
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -232,6 +359,15 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        .foo
+          a
+            color: #fff
+
+          +breakpoint("phone")
+            color: #ccc
+      SASS
+
       it { should report_lint }
     end
 
@@ -246,6 +382,14 @@ describe SCSSLint::Linter::DeclarationOrder do
           }
         SCSS
 
+        let(:sass) { <<-SASS }
+          +breakpoint("phone")
+            a
+              color: #000
+
+            color: #ccc
+        SASS
+
         it { should report_lint }
       end
 
@@ -258,6 +402,13 @@ describe SCSSLint::Linter::DeclarationOrder do
             }
           }
         SCSS
+
+        let(:sass) { <<-SASS }
+          +breakpoint("phone")
+            color: #ccc
+            a
+              color: #000
+        SASS
 
         it { should_not report_lint }
       end
@@ -284,6 +435,19 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        div
+          ul
+            @extend .thing
+            li
+              +box-shadow(yes)
+              background: green
+              a
+                span
+                  +border-radius(5px)
+                  color: #000
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -303,6 +467,16 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        div
+          ul
+            li
+              a
+                span
+                  color: #000
+                  +border-radius(5px)
+      SASS
+
       it { should report_lint }
     end
   end
@@ -318,6 +492,13 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        @media only screen and (max-width: 1px)
+          a
+            @extend foo
+            color: #f00
+      SASS
+
       it { should_not report_lint }
     end
 
@@ -330,6 +511,13 @@ describe SCSSLint::Linter::DeclarationOrder do
           }
         }
       SCSS
+
+      let(:sass) { <<-SASS }
+        @media only screen and (max-width: 1px)
+          a
+            color: #f00
+            @extend foo
+      SASS
 
       it { should report_lint }
     end
@@ -346,6 +534,15 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       SCSS
 
+      let(:sass) { <<-SASS }
+        @media only screen and (max-width: 1px)
+          a
+            span
+              color: #000
+
+            @extend foo
+      SASS
+
       it { should report_lint }
     end
   end
@@ -360,6 +557,14 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        &:hover
+          color: #000
+
+        color: #fff
+    SASS
+
     it { should report_lint }
   end
 
@@ -372,6 +577,13 @@ describe SCSSLint::Linter::DeclarationOrder do
         }
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        &:focus
+          color: #000
+    SASS
 
     it { should_not report_lint }
   end
@@ -386,6 +598,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        &.is-active
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -398,6 +617,13 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        &.is-active
+          color: #000
+    SASS
 
     it { should report_lint }
   end
@@ -412,6 +638,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        .is-active &
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -424,6 +657,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        .is-active &
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
@@ -438,6 +679,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        &:before
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -450,6 +698,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        &:before
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
@@ -464,6 +720,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        > .foo
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -476,6 +739,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        > .foo
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
@@ -490,6 +761,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        & + .foo
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -502,6 +780,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        & + .foo
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
@@ -516,6 +802,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        & ~ .foo
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -528,6 +821,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        & ~ .foo
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
@@ -542,6 +843,13 @@ describe SCSSLint::Linter::DeclarationOrder do
       }
     SCSS
 
+    let(:sass) { <<-SASS }
+      a
+        color: #fff
+        .foo
+          color: #000
+    SASS
+
     it { should_not report_lint }
   end
 
@@ -554,6 +862,14 @@ describe SCSSLint::Linter::DeclarationOrder do
         color: #fff;
       }
     SCSS
+
+    let(:sass) { <<-SASS }
+      a
+        .foo
+          color: #000
+
+        color: #fff
+    SASS
 
     it { should report_lint }
   end
