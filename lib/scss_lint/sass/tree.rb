@@ -114,9 +114,13 @@ module Sass::Tree
 
   class MixinDefNode
     def children
-      add_line_numbers_to_args(args)
+      if options
+        add_line_numbers_to_args(args)
 
-      concat_expr_lists super, args, splat
+        concat_expr_lists super, args, splat
+      else
+        super
+      end
     end
   end
 
