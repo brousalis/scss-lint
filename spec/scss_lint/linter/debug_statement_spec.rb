@@ -2,29 +2,41 @@ require 'spec_helper'
 
 describe SCSSLint::Linter::DebugStatement do
   context 'when no debug statements are present' do
-    let(:scss) { <<-SCSS }
-      p {
-        color: #fff;
-      }
-    SCSS
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        p {
+          color: #fff;
+        }
+      SCSS
 
-    let(:sass) { <<-SASS }
-      p
-        color: #fff
-    SASS
+      it { should_not report_lint }
+    end
 
-    it { should_not report_lint }
+    context 'sass' do
+      let(:sass) { <<-SASS }
+        p
+          color: #fff
+      SASS
+
+      it { should_not report_lint }
+    end
   end
 
   context 'when a debug statement is present' do
-    let(:scss) { <<-SCSS }
-      @debug 'This is a debug statement';
-    SCSS
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        @debug 'This is a debug statement';
+      SCSS
 
-    let(:sass) { <<-SASS }
-      @debug 'This is a debug statement'
-    SASS
+      it { should report_lint line: 1 }
+    end
 
-    it { should report_lint line: 1 }
+    context 'sass' do
+      let(:sass) { <<-SASS }
+        @debug 'This is a debug statement'
+      SASS
+
+      it { should report_lint line: 1 }
+    end
   end
 end
