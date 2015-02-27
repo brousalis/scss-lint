@@ -49,6 +49,10 @@ module Sass::Tree
     def concat_expr_lists(*expr_lists)
       expr_lists.flatten.compact
     end
+
+    def scss?
+      options && options[:syntax] == :scss
+    end
   end
 
   class CommentNode
@@ -59,7 +63,7 @@ module Sass::Tree
 
   class DebugNode
     def children
-      if options
+      if scss?
         concat_expr_lists super, expr
       else
         super
@@ -108,17 +112,22 @@ module Sass::Tree
 
   class IfNode
     def children
-      concat_expr_lists super, expr
+      if scss?
+        concat_expr_lists super, expr
+      else
+        super
+      end
     end
   end
 
   class MixinDefNode
     def children
-      if options
+      if scss?
         add_line_numbers_to_args(args)
 
         concat_expr_lists super, args, splat
       else
+        add_line_numbers_to_args(args)
         super
       end
     end
@@ -126,7 +135,7 @@ module Sass::Tree
 
   class MixinNode
     def children
-      if options
+      if scss?
         add_line_numbers_to_args(args)
 
         # Keyword mapping is String -> Expr, so convert the string to a variable
@@ -137,6 +146,7 @@ module Sass::Tree
 
         concat_expr_lists super, args, keyword_exprs, splat
       else
+        add_line_numbers_to_args(args)
         super
       end
     end
@@ -144,9 +154,10 @@ module Sass::Tree
 
   class PropNode
     def children
-      if options
+      if scss?
         concat_expr_lists super, extract_script_nodes(name), add_line_number(value)
       else
+        add_line_number(value)
         super
       end
     end
@@ -166,7 +177,7 @@ module Sass::Tree
 
   class VariableNode
     def children
-      if options
+      if scss?
         concat_expr_lists super, expr
       else
         super
