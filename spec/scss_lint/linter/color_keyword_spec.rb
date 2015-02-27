@@ -11,15 +11,6 @@ describe SCSSLint::Linter::ColorKeyword do
 
       it { should_not report_lint }
     end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          color: #fff
-      SASS
-
-      it { should_not report_lint }
-    end
   end
 
   context 'when a color is specified as a keyword' do
@@ -29,15 +20,6 @@ describe SCSSLint::Linter::ColorKeyword do
           color: white;
         }
       SCSS
-
-      it { should report_lint line: 2 }
-    end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          color: white
-      SASS
 
       it { should report_lint line: 2 }
     end
@@ -53,15 +35,6 @@ describe SCSSLint::Linter::ColorKeyword do
 
       it { should report_lint line: 2 }
     end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          border: 1px solid black
-      SASS
-
-      it { should report_lint line: 2 }
-    end
   end
 
   context 'when a property contains a color keyword as a string' do
@@ -71,15 +44,6 @@ describe SCSSLint::Linter::ColorKeyword do
           content: 'white';
         }
       SCSS
-
-      it { should_not report_lint }
-    end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          content: 'white'
-      SASS
 
       it { should_not report_lint }
     end
@@ -95,15 +59,6 @@ describe SCSSLint::Linter::ColorKeyword do
 
       it { should report_lint line: 2 }
     end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          color: function(red)
-      SASS
-
-      it { should report_lint line: 2 }
-    end
   end
 
   context 'when a mixin include contains a color keyword' do
@@ -113,15 +68,6 @@ describe SCSSLint::Linter::ColorKeyword do
           @include some-mixin(red);
         }
       SCSS
-
-      it { should report_lint line: 2 }
-    end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          +some-mixin(red)
-      SASS
 
       it { should report_lint line: 2 }
     end
@@ -137,15 +83,6 @@ describe SCSSLint::Linter::ColorKeyword do
 
       it { should_not report_lint }
     end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          +mixin(transparent)
-      SASS
-
-      it { should_not report_lint }
-    end
   end
 
   context 'when color keyword appears in a string identifier' do
@@ -155,15 +92,6 @@ describe SCSSLint::Linter::ColorKeyword do
           content: content-with-blue-in-name;
         }
       SCSS
-
-      it { should_not report_lint }
-    end
-
-    context 'sass' do
-      let(:sass) { <<-SASS }
-        p
-          content: content-with-blue-in-name
-      SASS
 
       it { should_not report_lint }
     end
