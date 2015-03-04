@@ -30,7 +30,7 @@ describe SCSSLint::Linter::ColorVariable do
       it { should report_lint line: 2 }
     end
 
-    context 'sass' do
+    xcontext 'sass' do
       let(:sass) { <<-SASS }
         p
           color: #f00
@@ -51,7 +51,7 @@ describe SCSSLint::Linter::ColorVariable do
       it { should report_lint line: 2 }
     end
 
-    context 'sass' do
+    xcontext 'sass' do
       let(:sass) { <<-SASS }
         p
           color: my-func(#f00)
@@ -72,7 +72,7 @@ describe SCSSLint::Linter::ColorVariable do
       it { should report_lint line: 2 }
     end
 
-    context 'sass' do
+    xcontext 'sass' do
       let(:sass) { <<-SASS }
         p
           +my-mixin(#f00)
@@ -93,7 +93,7 @@ describe SCSSLint::Linter::ColorVariable do
       it { should report_lint line: 2 }
     end
 
-    context 'sass' do
+    xcontext 'sass' do
       let(:sass) { <<-SASS }
         p
           border: 1px solid #f00
