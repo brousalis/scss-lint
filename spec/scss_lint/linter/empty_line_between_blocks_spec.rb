@@ -3,88 +3,167 @@ require 'spec_helper'
 describe SCSSLint::Linter::EmptyLineBetweenBlocks do
   context 'when there are multiple rule sets' do
     context 'with blank lines between them' do
-      let(:scss) { <<-SCSS }
-        a {
-        }
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          a {
+          }
 
-        b {
-        }
+          b {
+          }
 
-        p {
-        }
-      SCSS
+          p {
+          }
+        SCSS
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          a
+
+          b
+
+          p
+        SASS
+
+        it { should_not report_lint }
+      end
     end
 
     context 'with no blank line between them' do
-      let(:scss) { <<-SCSS }
-        a {
-        }
-        b {
-        }
-        p {
-        }
-      SCSS
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          a {
+          }
+          b {
+          }
+          p {
+          }
+        SCSS
 
-      it { should report_lint line: 2 }
-      it { should report_lint line: 4 }
-      it { should_not report_lint line: 6 }
+        it { should report_lint line: 2 }
+        it { should report_lint line: 4 }
+        it { should_not report_lint line: 6 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          a
+          b
+          p
+        SASS
+
+        it { should report_lint line: 1 }
+        it { should report_lint line: 2 }
+        it { should_not report_lint line: 3 }
+      end
     end
   end
 
   context 'when a rule set contains nested rule sets' do
     context 'and the nested rule sets have no blank line between them' do
-      let(:scss) { <<-SCSS }
-        p {
-          a {
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          p {
+            a {
+            }
+            b {
+            }
           }
-          b {
-          }
-        }
-      SCSS
+        SCSS
 
-      it { should report_lint line: 3 }
-      it { should_not report_lint line: 5 }
+        it { should report_lint line: 3 }
+        it { should_not report_lint line: 5 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          p
+            a
+            b
+        SASS
+
+        it { should report_lint line: 2 }
+        it { should_not report_lint line: 3 }
+      end
     end
 
     context 'and the nested rule sets have a blank line between them' do
-      let(:scss) { <<-SCSS }
-        p {
-          a {
-          }
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          p {
+            a {
+            }
 
-          b {
+            b {
+            }
           }
-        }
-      SCSS
+        SCSS
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          p
+            a
+
+            b
+        SASS
+
+        it { should_not report_lint }
+      end
     end
 
     context 'and the nested rule set has a property preceding it' do
-      let(:scss) { <<-SCSS }
-        p {
-          margin: 0;
-          a {
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          p {
+            margin: 0;
+            a {
+            }
           }
-        }
-      SCSS
+        SCSS
 
-      it { should report_lint line: 3 }
+        it { should report_lint line: 3 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          p
+            margin: 0
+            a
+        SASS
+
+        it { should report_lint line: 3 }
+      end
     end
 
     context 'and the nested rule set has a property and empty line preceding it' do
-      let(:scss) { <<-SCSS }
-        p {
-          margin: 0;
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          p {
+            margin: 0;
 
-          a {
+            a {
+            }
           }
-        }
-      SCSS
+        SCSS
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          p
+            margin: 0
+
+            a
+        SASS
+
+        it { should_not report_lint }
+      end
     end
   end
 
@@ -104,162 +183,314 @@ describe SCSSLint::Linter::EmptyLineBetweenBlocks do
 
   context 'when mixins are defined' do
     context 'and there is no blank line between them' do
-      let(:scss) { <<-SCSS }
-        @mixin mixin1() {
-        }
-        @mixin mixin2() {
-        }
-      SCSS
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @mixin mixin1() {
+          }
+          @mixin mixin2() {
+          }
+        SCSS
 
-      it { should report_lint line: 2 }
+        it { should report_lint line: 2 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          +mixin1()
+          +mixin2()
+        SASS
+
+        it { should report_lint line: 2 }
+      end
     end
 
     context 'and there is a blank line between them' do
-      let(:scss) { <<-SCSS }
-        @mixin mixin1() {
-        }
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @mixin mixin1() {
+          }
 
-        @mixin mixin2() {
-        }
-      SCSS
+          @mixin mixin2() {
+          }
+        SCSS
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { <<-SASS }
+          +mixin1()
+
+          +mixin2()
+        SASS
+
+        it { should_not report_lint }
+      end
     end
   end
 
   context 'when mixins are included without content' do
-    let(:scss) { <<-SCSS }
-      p {
-        @include mixin1();
-        property: blah;
-        @include mixin2(4);
-      }
-    SCSS
-
-    it { should_not report_lint }
-  end
-
-  context 'when mixins are included with content' do
-    context 'and there is no blank line between them' do
+    context 'scss' do
       let(:scss) { <<-SCSS }
-        @include mixin1() {
-          property: value;
-        }
-        @include mixin2() {
-          property: value;
-        }
-      SCSS
-
-      it { should report_lint line: 3 }
-    end
-
-    context 'and there is a blank line between them' do
-      let(:scss) { <<-SCSS }
-        @include mixin1() {
-          property: value;
-        }
-
-        @include mixin2() {
-          property: value;
+        p {
+          @include mixin1();
+          property: blah;
+          @include mixin2(4);
         }
       SCSS
 
       it { should_not report_lint }
+    end
+
+    xcontext 'sass' do
+      let(:sass) { <<-SASS }
+        p
+          +mixin1()
+          property: blah
+          +mixin2(4)
+      SASS
+
+      it { should_not report_lint }
+    end
+  end
+
+  context 'when mixins are included with content' do
+    context 'and there is no blank line between them' do
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @include mixin1() {
+            property: value;
+          }
+          @include mixin2() {
+            property: value;
+          }
+        SCSS
+
+        it { should report_lint line: 3 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          +mixin1()
+            property: value
+          +mixin2()
+            property: value
+        SASS
+
+        it { should report_lint line: 3 }
+      end
+    end
+
+    context 'and there is a blank line between them' do
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @include mixin1() {
+            property: value;
+          }
+
+          @include mixin2() {
+            property: value;
+          }
+        SCSS
+
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          +mixin1()
+            property: value
+
+          +mixin2()
+            property: value
+        SASS
+
+        it { should_not report_lint }
+      end
     end
   end
 
   context 'when functions are defined' do
     context 'and there is no blank line between them' do
-      let(:scss) { <<-SCSS }
-        @function func1() {
-        }
-        @function func2() {
-        }
-      SCSS
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @function func1() {
+          }
+          @function func2() {
+          }
+        SCSS
 
-      it { should report_lint line: 2 }
+        it { should report_lint line: 2 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          @function func1()
+          @function func2()
+        SASS
+
+        it { should report_lint line: 2 }
+      end
     end
 
     context 'and there is a blank line between them' do
-      let(:scss) { <<-SCSS }
-        @function func1() {
-        }
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          @function func1() {
+          }
 
-        @function func2() {
-        }
-      SCSS
+          @function func2() {
+          }
+        SCSS
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          @function func1()
+
+          @function func2()
+        SASS
+
+        it { should_not report_lint }
+      end
     end
   end
 
   context 'when a rule set is preceded by a comment' do
-    let(:scss) { <<-SCSS }
-      a {
-      }
-
-      // This is a comment
-      p {
-      }
-    SCSS
-
-    it { should_not report_lint }
-  end
-
-  context 'when a rule set is immediately followed by a comment' do
-    let(:scss) { <<-SCSS }
-      a {
-      } // A comment
-
-      a {
-      } /* Another comment */
-    SCSS
-
-    it { should_not report_lint }
-  end
-
-  context 'when rule set is followed by a comment on the next line' do
-    let(:scss) { <<-SCSS }
-      a {
-      }
-      // A trailing comment (often a control comment)
-
-      b {
-      }
-    SCSS
-
-    it { should_not report_lint }
-  end
-
-  context 'when there are multiple placeholder rule sets' do
-    context 'with blank lines between them' do
+    context 'scss' do
       let(:scss) { <<-SCSS }
-        %a {
+        a {
         }
 
-        %b {
-        }
-
-        %c {
+        // This is a comment
+        p {
         }
       SCSS
 
       it { should_not report_lint }
     end
 
-    context 'with no blank line between them' do
+    xcontext 'sass' do
+      let(:sass) { <<-SASS }
+        a
+
+        // This is a comment
+        p
+      SASS
+
+      it { should_not report_lint }
+    end
+  end
+
+  context 'when a rule set is immediately followed by a comment' do
+    context 'scss' do
       let(:scss) { <<-SCSS }
-        %a {
+        a {
+        } // A comment
+
+        a {
+        } /* Another comment */
+      SCSS
+
+      it { should_not report_lint }
+    end
+
+    xcontext 'sass' do
+      let(:sass) { <<-SASS }
+        a // A comment
+
+        a /* Another comment */
+      SASS
+
+      it { should_not report_lint }
+    end
+  end
+
+  context 'when rule set is followed by a comment on the next line' do
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        a {
         }
-        %b {
-        }
-        %c {
+        // A trailing comment (often a control comment)
+
+        b {
         }
       SCSS
 
-      it { should report_lint line: 2 }
-      it { should report_lint line: 4 }
-      it { should_not report_lint line: 6 }
+      it { should_not report_lint }
+    end
+
+    xcontext 'sass' do
+      let(:sass) { <<-SASS }
+        a
+        // A trailing comment (often a control comment)
+
+        b
+      SASS
+
+      it { should_not report_lint }
+    end
+  end
+
+  context 'when there are multiple placeholder rule sets' do
+    context 'with blank lines between them' do
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          %a {
+          }
+
+          %b {
+          }
+
+          %c {
+          }
+        SCSS
+
+        it { should_not report_lint }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          %a
+
+          %b
+
+          %c
+        SASS
+
+        it { should_not report_lint }
+      end
+    end
+
+    context 'with no blank line between them' do
+      context 'scss' do
+        let(:scss) { <<-SCSS }
+          %a {
+          }
+          %b {
+          }
+          %c {
+          }
+        SCSS
+
+        it { should report_lint line: 2 }
+        it { should report_lint line: 4 }
+        it { should_not report_lint line: 6 }
+      end
+
+      xcontext 'sass' do
+        let(:sass) { <<-SASS }
+          %a
+          %b
+          %c
+        SASS
+
+        it { should report_lint line: 1 }
+        it { should report_lint line: 2 }
+        it { should_not report_lint line: 3 }
+      end
     end
   end
 

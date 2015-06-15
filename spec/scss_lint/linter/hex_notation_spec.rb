@@ -5,22 +5,44 @@ describe SCSSLint::Linter::HexNotation do
   let(:style) { nil }
 
   context 'when rule is empty' do
-    let(:scss) { <<-SCSS }
-      p {
-      }
-    SCSS
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        p {
+        }
+      SCSS
 
-    it { should_not report_lint }
+      it { should_not report_lint }
+    end
+
+    context 'sass' do
+      let(:sass) { <<-SASS }
+        p
+      SASS
+
+      it { should_not report_lint }
+    end
   end
 
   context 'when rule contains color keyword' do
-    let(:scss) { <<-SCSS }
-      p {
-        border-color: red;
-      }
-    SCSS
+    context 'scss' do
+      let(:scss) { <<-SCSS }
+        p {
+          border-color: red;
+        }
+      SCSS
 
-    it { should_not report_lint }
+      it { should_not report_lint }
+    end
+
+    context 'sass' do
+      let(:scss) { <<-SCSS }
+        p {
+          border-color: red;
+        }
+      SCSS
+
+      it { should_not report_lint }
+    end
   end
 
   context 'lowercase style' do

@@ -16,11 +16,12 @@ module SCSSLint
     # @param options [Hash]
     # @option options [String] :file The file to load
     # @option options [String] :code The code to parse
-    def initialize(options = {})
+    # @param [String] :syntax The syntax type to parse
+    def initialize(options = {}, syntax=:scss)
       if options[:file]
         build_from_file(options[:file])
       elsif options[:code]
-        build_from_string(options[:code])
+        build_from_string(options[:code], syntax)
       end
 
       # Need to force encoding to avoid Windows-related bugs.
@@ -41,6 +42,7 @@ module SCSSLint
   private
 
     # @param path [String]
+    # TODO: parse file extension switch sass syntax option
     def build_from_file(path)
       @filename = path
       @engine = Sass::Engine.for_file(path, ENGINE_OPTIONS)
@@ -48,9 +50,9 @@ module SCSSLint
     end
 
     # @param scss [String]
-    def build_from_string(scss)
-      @engine = Sass::Engine.new(scss, ENGINE_OPTIONS)
-      @contents = scss
+    def build_from_string(str, syntax)
+      @engine = Sass::Engine.new(str, ENGINE_OPTIONS.merge(syntax: syntax))
+      @contents = str
     end
   end
 end

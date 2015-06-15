@@ -49,6 +49,10 @@ module Sass::Tree
     def concat_expr_lists(*expr_lists)
       expr_lists.flatten.compact
     end
+
+    def scss?
+      options && options[:syntax] == :scss
+    end
   end
 
   class CommentNode
@@ -59,7 +63,11 @@ module Sass::Tree
 
   class DebugNode
     def children
-      concat_expr_lists super, expr
+      if scss?
+        concat_expr_lists super, expr
+      else
+        super
+      end
     end
   end
 
@@ -110,29 +118,44 @@ module Sass::Tree
 
   class MixinDefNode
     def children
-      add_line_numbers_to_args(args)
+      if scss?
+        add_line_numbers_to_args(args)
 
-      concat_expr_lists super, args, splat
+        concat_expr_lists super, args, splat
+      else
+        add_line_numbers_to_args(args)
+        super
+      end
     end
   end
 
   class MixinNode
     def children
-      add_line_numbers_to_args(args)
+      if scss?
+        add_line_numbers_to_args(args)
 
-      # Keyword mapping is String -> Expr, so convert the string to a variable
-      # node that supports lint reporting
-      keyword_exprs = keywords.as_stored.map do |var_name, var_expr|
-        [create_variable(var_name), var_expr]
-      end if keywords.any?
+        # Keyword mapping is String -> Expr, so convert the string to a variable
+        # node that supports lint reporting
+        keyword_exprs = keywords.as_stored.map do |var_name, var_expr|
+          [create_variable(var_name), var_expr]
+        end if keywords.any?
 
-      concat_expr_lists super, args, keyword_exprs, splat
+        concat_expr_lists super, args, keyword_exprs, splat
+      else
+        add_line_numbers_to_args(args)
+        super
+      end
     end
   end
 
   class PropNode
     def children
-      concat_expr_lists super, extract_script_nodes(name), add_line_number(value)
+      if scss?
+        concat_expr_lists super, extract_script_nodes(name), add_line_number(value)
+      else
+        add_line_number(value)
+        super
+      end
     end
   end
 
@@ -150,7 +173,11 @@ module Sass::Tree
 
   class VariableNode
     def children
-      concat_expr_lists super, expr
+      if scss?
+        concat_expr_lists super, expr
+      else
+        super
+      end
     end
   end
 

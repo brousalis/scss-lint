@@ -7,21 +7,45 @@ describe SCSSLint::Linter::FinalNewline do
     let(:present) { true }
 
     context 'when the file is empty' do
-      let(:scss) { '' }
+      context 'scss' do
+        let(:scss) { '' }
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { '' }
+
+        it { should_not report_lint }
+      end
     end
 
     context 'when the file ends with a newline' do
-      let(:scss) { "p {}\n" }
+      context 'scss' do
+        let(:scss) { "p {}\n" }
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { "p \n" }
+
+        it { should_not report_lint }
+      end
     end
 
     context 'when the file does not end with a newline' do
-      let(:scss) { 'p {}' }
+      context 'scss' do
+        let(:scss) { 'p {}' }
 
-      it { should report_lint }
+        it { should report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { 'p' }
+
+        it { should report_lint }
+      end
     end
   end
 
@@ -29,21 +53,45 @@ describe SCSSLint::Linter::FinalNewline do
     let(:present) { false }
 
     context 'when the file is empty' do
-      let(:scss) { '' }
+      context 'scss' do
+        let(:scss) { '' }
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { '' }
+
+        it { should_not report_lint }
+      end
     end
 
     context 'when the file ends with a newline' do
-      let(:scss) { "p {}\n" }
+      context 'scss' do
+        let(:scss) { "p {}\n" }
 
-      it { should report_lint }
+        it { should report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { "p \n" }
+
+        it { should report_lint }
+      end
     end
 
     context 'when the file does not end with a newline' do
-      let(:scss) { 'p {}' }
+      context 'scss' do
+        let(:scss) { 'p {}' }
 
-      it { should_not report_lint }
+        it { should_not report_lint }
+      end
+
+      context 'sass' do
+        let(:sass) { 'p' }
+
+        it { should_not report_lint }
+      end
     end
   end
 end
