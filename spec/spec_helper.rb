@@ -13,7 +13,7 @@ def lint(style, syntax)
                  end
 
   if style
-    subject.run(SCSSLint::Engine.new(normalized, syntax), local_config)
+    subject.run(SCSSLint::Engine.new({code: normalized}, syntax), local_config)
   end
 end
 

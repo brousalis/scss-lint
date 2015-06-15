@@ -19,8 +19,9 @@ module SCSSLint
     # @param [String] :syntax The syntax type to parse
     def initialize(options = {}, syntax=:scss)
       if options[:file]
-        build_from_file(options[:file])
+        build_from_file(options[:file], syntax)
       elsif options[:code]
+
         build_from_string(options[:code], syntax)
       end
 
@@ -43,9 +44,9 @@ module SCSSLint
 
     # @param path [String]
     # TODO: parse file extension switch sass syntax option
-    def build_from_file(path)
+    def build_from_file(path, syntax)
       @filename = path
-      @engine = Sass::Engine.for_file(path, ENGINE_OPTIONS)
+      @engine = Sass::Engine.for_file(path, ENGINE_OPTIONS.merge(syntax: syntax))
       @contents = File.open(path, 'r').read
     end
 
